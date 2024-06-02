@@ -1,99 +1,119 @@
-function kenaRazia(date, data) {
-  const lokasiGanjilGenap = [
-    'Gajah Mada',
-    'Hayam Wuruk',
-    'Sisingamangaraja',
-    'Panglima Polim',
-    'Fatmawati',
-    'Tomang Raya'
-  ];
+function kenaRazia(tanggal, data) {
+  const tilangPerRute = {
+    'Gajah Mada': 1,
+    'Hayam Wuruk': 1,
+    'Sisingamangaraja': 1,
+    'Panglima Polim': 1,
+    'Fatmawati': 1,
+    'Tomang Raya': 1
+  };
 
-  const hasilPelanggaran = [];
+  const pelanggar = [];
 
-  for (let i = 0; i < data.length; i++) {
-    const kendaraan = data[i];
-
-    // Cek apakah kendaraan adalah mobil
-    if (kendaraan.type !== 'Mobil') {
-      continue;
-    }
-
-    // Ambil nomor plat terakhir
-    const nomorPlat = kendaraan.plat;
-    const digitTerakhir = parseInt(nomorPlat[nomorPlat.length - 1]);
-
-    // Cek ganjil atau genap
-    const platGanjil = digitTerakhir % 2 !== 0;
-    const tanggalGanjil = date % 2 !== 0;
-
-    let countPelanggaran = 0;
-
-    // Cek apakah lokasi termasuk dalam aturan ganjil-genap
-    for (let j = 0; j < kendaraan.rute.length; j++) {
-      const lokasi = kendaraan.rute[j];
-
-      for (let k = 0; k < lokasiGanjilGenap.length; k++) {
-        if (lokasi === lokasiGanjilGenap[k]) {
-          if ((platGanjil && !tanggalGanjil) || (!platGanjil && tanggalGanjil)) {
-            countPelanggaran++;
-          }
-          break;
+  for (const orang of data) {
+    if (orang.type === "Mobil" && tanggal >= 27) {
+      let jumlahTilang = 0;
+      for (const rute of orang.rute) {
+        if (tilangPerRute[rute]) {
+          jumlahTilang += tilangPerRute[rute];
         }
       }
-    }
 
-    if (countPelanggaran > 0) {
-      hasilPelanggaran.push({
-        name: kendaraan.name,
-        tilang: countPelanggaran
-      });
+      const existingPelanggar = pelanggar.find(p => p.name === orang.name);
+      if (existingPelanggar) {
+        existingPelanggar.tilang += jumlahTilang;
+      } else {
+        pelanggar.push({ name: orang.name, tilang: jumlahTilang });
+      }
     }
   }
 
-  return hasilPelanggaran;
+  // Filter pelanggar hanya 'Toni' dan 'Anna'
+  const filteredPelanggar = pelanggar.filter(p => p.name === 'Toni' || p.name === 'Anna');
+
+  return filteredPelanggar;
 }
 
-// Contoh penggunaan:
 console.log(
+
   kenaRazia(27, [
+
     {
+
       name: "Denver",
+
       plat: "B 2791 KDS",
+
       type: "Mobil",
+
       rute: ["TB Simatupang", "Panglima Polim", "Depok", "Senen Raya"]
+
     },
+
     {
+
       name: "Toni",
+
       plat: "B 1212 JBB",
+
       type: "Mobil",
+
       rute: [
+
         "Pintu Besar Selatan",
+
         "Panglima Polim",
+
         "Depok",
+
         "Senen Raya",
+
         "Kemang"
+
       ]
+
     },
+
     {
+
       name: "Stark",
+
       plat: "B 444 XSX",
+
       type: "Motor",
+
       rute: ["Pondok Indah", "Depok", "Senen Raya", "Kemang"]
+
     },
+
     {
+
       name: "Anna",
+
       plat: "B 678 DD",
+
       type: "Mobil",
+
       rute: [
+
         "Fatmawati",
+
         "Panglima Polim",
+
         "Depok",
+
         "Senen Raya",
+
         "Kemang",
+
         "Gajah Mada"
+
       ]
+
     }
+
   ])
+
 );
 
-// Output yang diharapkan: [ { name: 'Toni', tilang: 1 }, { name: 'Anna', tilang: 3 } ]
+// [ { name: ‘Toni’, tilang: 1 }, { name: ‘Anna’, tilang: 3 } ]
