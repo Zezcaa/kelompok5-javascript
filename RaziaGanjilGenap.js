@@ -1,4 +1,5 @@
 function kenaRazia(tanggal, data) {
+  // Daftar rute yang kena tilang
   const tilangPerRute = {
     'Gajah Mada': 1,
     'Hayam Wuruk': 1,
@@ -8,10 +9,12 @@ function kenaRazia(tanggal, data) {
     'Tomang Raya': 1
   };
 
+  // Daftar pelanggar
   const pelanggar = [];
 
+  // Proses data pelanggar
   for (const orang of data) {
-    if (orang.type === "Mobil" && tanggal >= 27) {
+    if (orang.type === "Mobil") {
       let jumlahTilang = 0;
       for (const rute of orang.rute) {
         if (tilangPerRute[rute]) {
@@ -19,101 +22,63 @@ function kenaRazia(tanggal, data) {
         }
       }
 
-      const existingPelanggar = pelanggar.find(p => p.name === orang.name);
-      if (existingPelanggar) {
-        existingPelanggar.tilang += jumlahTilang;
-      } else {
-        pelanggar.push({ name: orang.name, tilang: jumlahTilang });
+      if (jumlahTilang > 0 && tanggal >= 27) {
+        const existingPelanggar = pelanggar.find(p => p.name === orang.name);
+        if (existingPelanggar) {
+          existingPelanggar.tilang += jumlahTilang;
+        } else {
+          pelanggar.push({ name: orang.name, tilang: jumlahTilang });
+        }
       }
     }
   }
 
-  // Filter pelanggar hanya 'Toni' dan 'Anna'
-  const filteredPelanggar = pelanggar.filter(p => p.name === 'Toni' || p.name === 'Anna');
-
-  return filteredPelanggar;
+  // Kembalikan daftar pelanggar
+  return pelanggar;
 }
 
-console.log(
+// Contoh penggunaan function
+const dataPelanggar = [
+  {
+    name: "Denver",
+    plat: "B 2791 KDS",
+    type: "Mobil",
+    rute: ["TB Simatupang", "Panglima Polim", "Depok", "Senen Raya"]
+  },
+  {
+    name: "Toni",
+    plat: "B 1212 JBB",
+    type: "Mobil",
+    rute: [
+      "Pintu Besar Selatan",
+      "Panglima Polim",
+      "Depok",
+      "Senen Raya",
+      "Kemang"
+    ]
+  },
+  {
+    name: "Stark",
+    plat: "B 444 XSX",
+    type: "Motor",
+    rute: ["Pondok Indah", "Depok", "Senen Raya", "Kemang"]
+  },
+  {
+    name: "Anna",
+    plat: "B 678 DD",
+    type: "Mobil",
+    rute: [
+      "Fatmawati",
+      "Panglima Polim",
+      "Depok",
+      "Senen Raya",
+      "Kemang",
+      "Gajah Mada"
+    ]
+  }
+];
 
-  kenaRazia(27, [
+const tanggalRazia = 27;
 
-    {
-
-      name: "Denver",
-
-      plat: "B 2791 KDS",
-
-      type: "Mobil",
-
-      rute: ["TB Simatupang", "Panglima Polim", "Depok", "Senen Raya"]
-
-    },
-
-    {
-
-      name: "Toni",
-
-      plat: "B 1212 JBB",
-
-      type: "Mobil",
-
-      rute: [
-
-        "Pintu Besar Selatan",
-
-        "Panglima Polim",
-
-        "Depok",
-
-        "Senen Raya",
-
-        "Kemang"
-
-      ]
-
-    },
-
-    {
-
-      name: "Stark",
-
-      plat: "B 444 XSX",
-
-      type: "Motor",
-
-      rute: ["Pondok Indah", "Depok", "Senen Raya", "Kemang"]
-
-    },
-
-    {
-
-      name: "Anna",
-
-      plat: "B 678 DD",
-
-      type: "Mobil",
-
-      rute: [
-
-        "Fatmawati",
-
-        "Panglima Polim",
-
-        "Depok",
-
-        "Senen Raya",
-
-        "Kemang",
-
-        "Gajah Mada"
-
-      ]
-
-    }
-
-  ])
-
-);
-
-// [ { name: ‘Toni’, tilang: 1 }, { name: ‘Anna’, tilang: 3 } ]
+const pelanggar = kenaRazia(tanggalRazia, dataPelanggar);
+console.log(pelanggar);
